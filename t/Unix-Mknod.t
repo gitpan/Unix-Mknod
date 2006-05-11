@@ -7,8 +7,8 @@
 
 use Test;
 BEGIN { plan tests => 12 };
-use Unix::Mknod ':all';
-use Fcntl ':mode';
+use Unix::Mknod qw(:all);
+use Fcntl qw(:mode);
 use File::stat;
 
 $file='/tmp/special';

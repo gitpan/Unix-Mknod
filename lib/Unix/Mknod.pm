@@ -12,7 +12,7 @@ our @ISA = qw(Exporter);
 # names by default without a very good reason. Use EXPORT_OK instead.
 # Do not simply export all your public functions/methods/constants.
 
-# This allows declaration	use Unix::Mknod ':all';
+# This allows declaration	use Unix::Mknod qw(:all);
 # If you do not need this, moving things directly into @EXPORT or @EXPORT_OK
 # will save memory.
 our %EXPORT_TAGS = ( 'all' => [ qw(
@@ -25,16 +25,13 @@ our @EXPORT = qw(
 
 );
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 require XSLoader;
 XSLoader::load('Unix::Mknod', $VERSION);
 
-# Preloaded methods go here.
-
 1;
 __END__
-# Below is stub documentation for your module. You'd better edit it!
 
 =head1 NAME
 
@@ -42,9 +39,9 @@ Unix::Mknod - Perl extension for mknod, major, minor, and makedev
 
 =head1 SYNOPSIS
 
- use Unix::Mknod;
+ use Unix::Mknod qw(:all);
  use File::stat;
- use Fcntl ':mode';
+ use Fcntl qw(:mode);
 
  $st=stat('/dev/null');
  $major=major($st->rdev);
@@ -121,7 +118,7 @@ Jim Pirzyk, E<lt>pirzyk@uiuc.eduE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (c) 2005  University of Illinois Board of Trustees
+Copyright (c) 2005-2006 University of Illinois Board of Trustees
 All rights reserved.
 
 Developed by: Campus Information Technologies and Educational Services,
