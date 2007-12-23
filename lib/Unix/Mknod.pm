@@ -25,7 +25,7 @@ our @EXPORT = qw(
 
 );
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 require XSLoader;
 XSLoader::load('Unix::Mknod', $VERSION);
@@ -54,7 +54,7 @@ Unix::Mknod - Perl extension for mknod, major, minor, and makedev
 This module allows access to the device routines major()/minor()/makedev()
 that may or may not be macros in .h files.    
 
-It also allows access to the mknod system call.
+It also allows access to the C<mknod(2)> system call.
 
 =head1 FUNCTIONS
 
@@ -62,36 +62,37 @@ It also allows access to the mknod system call.
 
 =item I<mknod($filename, $mode, $rdev)>
 
-Creates a block or character special device named $filename.  Returns
-0 on success and -1 on failure.  Must be run as root.
+Creates a block or character device special file named I<$filename>. 
+Must be run as a privileged user, usually I<root>.  Returns 0 on success
+and -1 on failure, like C<POSIX::mkfifo> does.
 
 =item I<$major = major($rdev)>
 
-Returns the major number for the specical device as defined by the 
-st_rdev field from the stat() call.
+Returns the major number for the device special file as defined by the 
+st_rdev field from the C<stat(3)> call.
 
 =item I<$minor = minor($rdev)>
 
-Returns the minor number for the specical device as defined by the 
-st_rdev field from the stat() call.
+Returns the minor number for the device special file as defined by the 
+st_rdev field from the C<stat(3)> call.
 
 =item I<$rdev = makedev($major, $minor)>
 
-Returns the st_rdev number for the specical device from the $major 
-and $minor numbers.
+Returns the st_rdev number for the device special file from the I<$major>
+and I<$minor> numbers.
 
 =back
 
 =head1 NOTES
 
-There are 2 other perl modules that implement the mknod(2) system call,
-but they have problems working on some platforms.  Sys::Mknod does not
-work on AIX because it uses the syscall(2) generic system call which
-AIX does not have.  Mknod implements S_IFIFO, which on most platforms
-is not implemented in mknod, but rather mkfifo (which is implemented
-in POSIX perl module).
+There are 2 other perl modules that implement the C<mknod(2)> system call,
+but they have problems working on some platforms.  C<Sys::Mknod> does not
+work on AIX because it uses the C<syscall(2)> generic system call which
+AIX does not have.  C<Mknod> implements S_IFIFO, which on most platforms
+is not implemented in C<mknod(1)>, but rather C<mkfifo(1)> (which is
+implemented in POSIX perl module).
 
-The perl module File::Stat::Bits also implements major() and minor() (and
+The perl module C<File::Stat::Bits> also implements major() and minor() (and
 a version of makedev() called dev_join).  They are done as a program to
 get the bit masks at compile time, but if major() and minor() are 
 implemented as sub routines, the arugment could be something as simple
@@ -100,15 +101,17 @@ to its result).
 
 =head1 BUGS
 
-mknod will not work when you are not I<root>, nor when you are trying to
-create a device on a filesystem that is mounted I<nodev>, nor within a
-Solaris zone that is not the global zone.
+Running C<make test> as non root will not truly test the functions, as in
+most UNIX like OSes, C<mknod(2)> needs to be invoked by a privelaged user, 
+usually I<root>.
 
 =head1 SEE ALSO
 
-File::Stat::Bits, Mknod, POSIX, Sys::Mknod
+C<$ERRNO> or C<$!> for the specific error message.
 
-major(9), minor(9), mkfifo(1), mknod(8)
+L<File::Stat::Bits>, L<Mknod>, L<POSIX>, L<Sys::Mknod>
+
+C<major(9)>, C<minor(9)>, C<mkfifo(1)>, C<mknod(8)>
 
 ftp://ftp-dev.cites.uiuc.edu/pub/Unix-Mknod
 
@@ -118,7 +121,7 @@ Jim Pirzyk, E<lt>pirzyk@uiuc.eduE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (c) 2005-2006 University of Illinois Board of Trustees
+Copyright (c) 2005-2008 University of Illinois Board of Trustees
 All rights reserved.
 
 Developed by: Campus Information Technologies and Educational Services,

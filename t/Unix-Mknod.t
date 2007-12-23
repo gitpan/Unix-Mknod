@@ -6,7 +6,7 @@
 # change 'tests => 1' to 'tests => last_test_to_print';
 
 use Test;
-BEGIN { plan tests => 12 };
+BEGIN { plan tests => 11 };
 use Unix::Mknod qw(:all);
 use Fcntl qw(:mode);
 use File::stat;
@@ -26,46 +26,44 @@ my ($st)=stat('/dev/null');
 ok(makedev(major($st->rdev), minor($st->rdev)), $st->rdev);
 
 # Can only run mknod if we are root
-ok($<, 0, "Need to run test as root");
-
 skip (
-	$< != 0,
+	($< != 0? "Test needs to be run as root": 0),
 	mknod($file, S_IFCHR|0600, makedev(1,2)),
 	0
 );
 
 $st=stat($file);
 skip (
-	! -e $file,
+	($< != 0? "Test needs to be run as root": 0),
 	defined($st) && &S_ISCHR($st->mode)
 );
 skip (
-	! -e $file,
+	($< != 0? "Test needs to be run as root": 0),
 	defined($st) && !&S_ISBLK($st->mode)
 );
 skip(
-	! -e $file,
+	($< != 0? "Test needs to be run as root": 0),
 	defined($st) && ($st->mode & S_IRUSR|S_IWUSR)
 );
 unlink $file
 	if ( -e $file);
 
 skip (
-	$< != 0,
+	($< != 0? "Test needs to be run as root": 0),
 	mknod($file, S_IFBLK|0600, makedev(1,2)),
 	0
 );
 $st=stat($file);
 skip (
-	! -e $file,
+	($< != 0? "Test needs to be run as root": 0),
 	defined($st) && &S_ISBLK($st->mode)
 );
 skip (
-	! -e $file,
+	($< != 0? "Test needs to be run as root": 0),
 	defined($st) && !&S_ISCHR($st->mode)
 );
 skip (
-	! -e $file,
+	($< != 0? "Test needs to be run as root": 0),
 	defined($st) && ($st->mode & S_IRUSR|S_IWUSR)
 );
 
